@@ -31,4 +31,23 @@ class Navicella:
         self.rect.x = sdx * velocita_navicella
         self.rect.x = max(0, min(WIDTH - self.rect.width, self.rect.x))
 
+    def disegno(self, surface):
+        surface.blit(navicella, self.rect)
+    
+
+class Proiettile:
+    def __init__(self, x, y):
+        self.rect = proiettile.get_rect(centro = (x, y))
+    
+    def movimento(self):
+        self.rect.y -= velocita_proiettile
+    
+    def disegno(self, surface):
+        surface.blit(proiettile,self.rect)
+
+class Nemico:
+    def __init__(self):
+        x = random.randint(0, WIDTH - nemico.get_width())
+        self.rect =nemico.get_rect(altosinistra =) 
+
          
