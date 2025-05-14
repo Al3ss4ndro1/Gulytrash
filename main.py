@@ -37,7 +37,7 @@ class Navicella:
 
 class Proiettile:
     def __init__(self, x, y):
-        self.rect = proiettile.get_rect(centro = (x, y))
+        self.rect = proiettile.get_rect(center = (x, y))
     
     def movimento(self):
         self.rect.y -= velocita_proiettile
@@ -48,6 +48,6 @@ class Proiettile:
 class Nemico:
     def __init__(self):
         x = random.randint(0, WIDTH - nemico.get_width())
-        self.rect =nemico.get_rect(altosinistra =) 
+        self.rect =nemico.get_rect(topleft =) 
 
          
