@@ -25,7 +25,7 @@ velocita_nemico= 3
 
 class Navicella:
     def __init__(self):
-        self.rect = navicella.get_rect(centro = (WIDTH //2, HEIGHT - 60))
+        self.rect = navicella.get_rect(center = (WIDTH //2, HEIGHT - 60))
     
     def movimento(self, sdx):
         self.rect.x = sdx * velocita_navicella
