@@ -48,6 +48,50 @@ class Proiettile:
 class Nemico:
     def __init__(self):
         x = random.randint(0, WIDTH - nemico.get_width())
-        self.rect =nemico.get_rect(topleft =) 
+        self.rect =nemico.get_rect(topleft=(x,-40)
 
+    def move(self):
+        self.rect.y += velocità_nemico
+
+    def draw(self, surface):
+        surface.blit(nemico, self.rect)
+        
+    
+    def main():
+    navicella = Navicella()
+    proiettili = []
+    nemici = []
+    score = 0
+    spawn_timer = 0
+
+    running = True
+    while running:
+        clock.tick(fps)
+        win.fill((0, 0, 0))
+    
+     for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+     keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            naicella.move(-1)
+        if keys[pygame.K_RIGHT]:
+            navicella.move(1)
+        if keys[pygame.K_SPACE] and len(proiettili) < 5:
+            proiettili.append(Proiettile(navicella.rect.centerx, navicella.rect.top))
+    
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
          
