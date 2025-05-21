@@ -57,7 +57,7 @@ class Nemico:
         surface.blit(nemico, self.rect)
         
     
-    def main():
+def main():
     navicella = Navicella()
     proiettili = []
     nemici = []
