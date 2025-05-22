@@ -31,9 +31,11 @@ class Navicella:
     def __init__(self):
         self.rect = navicella_img.get_rect(center=(WIDTH // 2, HEIGHT - 100))
 
-    def movimento(self, sdx):
+    def movimento(self, sdx, fdx):
         self.rect.x += sdx * velocita_navicella
         self.rect.x = max(0, min(WIDTH - self.rect.width, self.rect.x))
+        self.rect.y += fdx * velocita_navicella
+        self.rect.y = max(0, min(HEIGHT - self.rect.height, self.rect.y))
 
     def disegno(self, surface):
         surface.blit(navicella_img, self.rect)
@@ -79,9 +81,13 @@ while running:
             running = False
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
-        navicella.movimento(-1)
+        navicella.movimento(-1,0)
     if keys[pygame.K_RIGHT]:
-        navicella.movimento(1)
+        navicella.movimento(1,0)
+    if keys[pygame.K_UP]:
+        navicella.movimento(0,-1)
+    if keys[pygame.K_DOWN]:
+        navicella.movimento(0,1)
     if keys[pygame.K_SPACE] and len(proiettili) < 5:
         proiettili.append(
             Proiettile(navicella.rect.centerx, navicella.rect.top))
@@ -91,7 +97,7 @@ while running:
         if proiettile.rect.bottom < 0:
             proiettili.remove(proiettile)
 
-    spawn_timer += 1
+    spawn_timer += 2
     if spawn_timer > 60:  
         nemici.append(Nemico())
         spawn_timer = 0
@@ -132,16 +138,3 @@ sys.exit()
 if __name__ == "__main__":
     main()
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-         
