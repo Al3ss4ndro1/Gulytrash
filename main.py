@@ -12,10 +12,11 @@ magenta = (230, 150, 255)
 font = pygame.font.SysFont("Arial", 30)
 clock= pygame.time.Clock()
 fps = 60
-WHITE = (0, 0, 0)
+WHITE = (255, 255, 255)
 
 navicella_img = pygame.Surface((50, 40))
 navicella_img.fill(ciano)
+pygame.draw.rect(navicella_img, WHITE, navicella_img.get_rect(), 2)  
 velocita_navicella = 5
 proiettile_img = pygame.Surface((5, 10))
 proiettile_img.fill(magenta)
@@ -26,23 +27,23 @@ velocita_nemico= 3
 
 class Navicella:
     def __init__(self):
-        self.rect = navicella_img.get_rect(center = (WIDTH //2, HEIGHT - 60))
-    
+        self.rect = navicella_img.get_rect(center = (WIDTH //2, HEIGHT - 100))
+
     def movimento(self, sdx):
-        self.rect.x = sdx * velocita_navicella
+        self.rect.x += sdx * velocita_navicella
         self.rect.x = max(0, min(WIDTH - self.rect.width, self.rect.x))
 
     def disegno(self, surface):
         surface.blit(navicella_img, self.rect)
-    
+
 
 class Proiettile:
     def __init__(self, x, y):
         self.rect = proiettile_img.get_rect(center = (x, y))
-    
+
     def movimento(self):
         self.rect.y -= velocita_proiettile
-    
+
     def disegno(self, surface):
         surface.blit(proiettile_img,self.rect)
 
@@ -56,8 +57,8 @@ class Nemico:
 
     def disegno(self, surface):
         surface.blit(nemico_img, self.rect)
-        
-    
+
+
 
 navicella = Navicella()
 proiettili = []
@@ -74,27 +75,27 @@ while running:
             running = False
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
-        navicella.move(-1)
+        navicella.movimento(-1)
     if keys[pygame.K_RIGHT]:
-        navicella.move(1)
+        navicella.movimento(1)
     if keys[pygame.K_SPACE] and len(proiettili) < 5:
         proiettili.append(Proiettile(navicella.rect.centerx, navicella.rect.top))
 
     for proiettile in proiettili[:]:
-        proiettile.move()
+        proiettile.movimento()
         if proiettile.rect.bottom < 0:
             proiettili.remove(proiettile)
 
     spawn_timer += 1
     if spawn_timer > 30:
-        nemici.append(nemico())
+        nemici.append(Nemico())
         spawn_timer = 0
-    
+
     for nemico in nemici[:]:
         nemico.move()
         if nemico.rect.top > HEIGHT:
             nemici.remove(nemico)
-    
+
     for proiettile in proiettili[:]:
         for nemico in nemici[:]:
             if proiettile.rect.colliderect(nemico.rect):
@@ -108,7 +109,7 @@ while running:
         proiettile.disegno(win)
     for nemico in nemici:
         nemico.disegno(win)
-    score_text = FONT.render(f"Score: {score}", True, WHITE)
+    score_text = font.render(f"Score: {score}", True, WHITE)
     win.blit(score_text, (10, 10))
     pygame.display.flip()
 
@@ -116,7 +117,7 @@ pygame.quit()
 sys.exit()
 
 if __name__ == "__main__":
-    main()
+    main( )
     
         
         
