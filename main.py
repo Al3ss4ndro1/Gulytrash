@@ -12,74 +12,111 @@ magenta = (230, 150, 255)
 font = pygame.font.SysFont("Arial", 30)
 clock= pygame.time.Clock()
 fps = 60
+WHITE = (0, 0, 0)
 
-navicella = pygame.Surface(50, 40)
-navicella.fill(ciano)
+navicella_img = pygame.Surface((50, 40))
+navicella_img.fill(ciano)
 velocita_navicella = 5
-proiettile = pygame.Surface(5, 10)
-proiettile.fill(magenta)
+proiettile_img = pygame.Surface((5, 10))
+proiettile_img.fill(magenta)
 velocita_proiettile = 7
-nemico= pygame.Surface(30, 20)
-nemico.fill(rosso)
+nemico_img= pygame.Surface((30, 20))
+nemico_img.fill(rosso)
 velocita_nemico= 3
 
 class Navicella:
     def __init__(self):
-        self.rect = navicella.get_rect(center = (WIDTH //2, HEIGHT - 60))
+        self.rect = navicella_img.get_rect(center = (WIDTH //2, HEIGHT - 60))
     
     def movimento(self, sdx):
         self.rect.x = sdx * velocita_navicella
         self.rect.x = max(0, min(WIDTH - self.rect.width, self.rect.x))
 
     def disegno(self, surface):
-        surface.blit(navicella, self.rect)
+        surface.blit(navicella_img, self.rect)
     
 
 class Proiettile:
     def __init__(self, x, y):
-        self.rect = proiettile.get_rect(center = (x, y))
+        self.rect = proiettile_img.get_rect(center = (x, y))
     
     def movimento(self):
         self.rect.y -= velocita_proiettile
     
     def disegno(self, surface):
-        surface.blit(proiettile,self.rect)
+        surface.blit(proiettile_img,self.rect)
 
 class Nemico:
     def __init__(self):
-        x = random.randint(0, WIDTH - nemico.get_width())
-        self.rect =nemico.get_rect(topleft=(x,-40)
+        x = random.randint(0, WIDTH - nemico_img.get_width())
+        self.rect =nemico_img.get_rect(topleft=(x,-40))
 
     def move(self):
-        self.rect.y += velocità_nemico
+        self.rect.y += velocita_nemico
 
-    def draw(self, surface):
-        surface.blit(nemico, self.rect)
+    def disegno(self, surface):
+        surface.blit(nemico_img, self.rect)
         
     
-def main():
-    navicella = Navicella()
-    proiettili = []
-    nemici = []
-    score = 0
-    spawn_timer = 0
 
-    running = True
-    while running:
-        clock.tick(fps)
-        win.fill((0, 0, 0))
+navicella = Navicella()
+proiettili = []
+nemici = []
+score = 0
+spawn_timer = 0
+running = True
+while running:
+    clock.tick(fps)
+    win.fill((0, 0, 0))
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT]:
+        navicella.move(-1)
+    if keys[pygame.K_RIGHT]:
+        navicella.move(1)
+    if keys[pygame.K_SPACE] and len(proiettili) < 5:
+        proiettili.append(Proiettile(navicella.rect.centerx, navicella.rect.top))
+
+    for proiettile in proiettili[:]:
+        proiettile.move()
+        if proiettile.rect.bottom < 0:
+            proiettili.remove(proiettile)
+
+    spawn_timer += 1
+    if spawn_timer > 30:
+        nemici.append(nemico())
+        spawn_timer = 0
     
-     for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-     keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-            naicella.move(-1)
-        if keys[pygame.K_RIGHT]:
-            navicella.move(1)
-        if keys[pygame.K_SPACE] and len(proiettili) < 5:
-            proiettili.append(Proiettile(navicella.rect.centerx, navicella.rect.top))
+    for nemico in nemici[:]:
+        nemico.move()
+        if nemico.rect.top > HEIGHT:
+            nemici.remove(nemico)
     
+    for proiettile in proiettili[:]:
+        for nemico in nemici[:]:
+            if proiettile.rect.colliderect(nemico.rect):
+                proiettili.remove(proiettile)
+                nemici.remove(nemico)
+                score += 1
+                break
+
+    navicella.disegno(win)
+    for proiettile in proiettili:
+        proiettile.disegno(win)
+    for nemico in nemici:
+        nemico.disegno(win)
+    score_text = FONT.render(f"Score: {score}", True, WHITE)
+    win.blit(score_text, (10, 10))
+    pygame.display.flip()
+
+pygame.quit()
+sys.exit()
+
+if __name__ == "__main__":
+    main()
     
         
         
