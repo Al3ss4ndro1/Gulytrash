@@ -97,7 +97,7 @@ while running:
         if proiettile.rect.bottom < 0:
             proiettili.remove(proiettile)
 
-    spawn_timer += 2
+    spawn_timer += 4
     if spawn_timer > 60:  
         nemici.append(Nemico())
         spawn_timer = 0
