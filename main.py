@@ -28,8 +28,9 @@ bonus_duration = 10000
 bonus_timer = 0
 bonus_chance = 0.02   
 sparosnd = pygame.mixer.Sound('immagini/flanged zap.wav')
+exsnd = pygame.mixer.Sound('immagini/crazy.wav')
 sparosnd.set_volume(0.5)  
-
+exsnd.set_volume(0.1)
 
 class Sfondo:
     def __init__(self, size):
@@ -42,7 +43,7 @@ class Sfondo:
 
 class Navicella:
     def __init__(self, size):
-        self.image = pygame.image.load('immagini/navicella_nosfondo.png')
+        self.image = pygame.image.load('immagini/navicella2 (1).png')
         self.image = pygame.transform.scale(self.image, size)
         self.rect = self.image.get_rect(center=(WIDTH // 2, HEIGHT - 100))
     def movimento(self, dx, dy):
@@ -87,10 +88,25 @@ class Bonus:
     def disegno(self, surface):
         surface.blit(self.image, self.rect)
 
+class Esplosione:
+    def __init__(self, x, y, size):
+        self.image = pygame.image.load('immagini/esplosione (1).png')
+        self.image = pygame.transform.scale(self.image, size)
+        self.rect = self.image.get_rect(center=(x, y))
+        self.start_time = pygame.time.get_ticks()
+        self.duration = 300  
+
+    def disegno(self, surface):
+        surface.blit(self.image, self.rect)
+
+    def scaduta(self):
+        return pygame.time.get_ticks() - self.start_time > self.duration
+
 
 navicella = Navicella(size)
 proiettili = []
 nemici = []
+esplosioni = []
 bonus_drops = []
 score = 0
 spawn_timer = 0
@@ -148,6 +164,8 @@ while running:
                 proiettili.remove(proiettile)
                 nemici.remove(nemico)
                 score += 1
+                exsnd.play()
+                esplosioni.append(Esplosione(nemico.rect.centerx, nemico.rect.centery, sizen))
                 if random.random() < bonus_chance:
                     bonus_drops.append(Bonus(nemico.rect.centerx, nemico.rect.centery, sizepup))
                 break
@@ -172,6 +190,12 @@ while running:
         nemico.disegno(win)
     for bonus in bonus_drops:
         bonus.disegno(win)
+    for esplosione in esplosioni[:]:
+        if esplosione.scaduta():
+            esplosioni.remove(esplosione)
+        else:
+            esplosione.disegno(win)
+
 
     score_text = font.render(f"Score: {score}", True, WHITE)
     win.blit(score_text, (10, 10))
