@@ -28,6 +28,8 @@ bonus_duration = 10000
 bonus_timer = 0
 bonus_chance = 0.02   
 sparosnd = pygame.mixer.Sound('immagini/flanged zap.wav')
+sparosnd.set_volume(0.5)  
+
 
 class Sfondo:
     def __init__(self, size):
