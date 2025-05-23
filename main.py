@@ -65,7 +65,7 @@ class Nemico:
 
 class Proiettile:
     def __init__(self, x, y, size):
-        self.image = pygame.image.load('immagini/th (1) (1).png')
+        self.image = pygame.image.load('immagini/laser (1).png')
         self.image = pygame.transform.scale(self.image, size)
         self.rect = self.image.get_rect(center=(x, y))
     def movimento(self):
@@ -76,7 +76,7 @@ class Proiettile:
 
 class Bonus:
     def __init__(self, x, y, size):
-        self.image = pygame.image.load('immagini/powerup (1).png')
+        self.image = pygame.image.load('immagini/bonus.png')
         self.image = pygame.transform.scale(self.image, size)  
         self.rect = self.image.get_rect(center=(x, y))
     def movimento(self):
