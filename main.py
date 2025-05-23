@@ -62,7 +62,7 @@ class Nemico:
         x = random.randint(0, WIDTH - self.image.get_width())
         self.rect = self.image.get_rect(topleft=(x, -40))
     def move(self):
-        self.rect.y += velocita_nemico
+        self.rect.y += random.randint(1,6)
     def disegno(self, surface):
         surface.blit(self.image, self.rect)
 
