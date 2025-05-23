@@ -13,32 +13,41 @@ font = pygame.font.SysFont("Arial", 30)
 clock = pygame.time.Clock()
 fps = 60
 WHITE = (255, 255, 255)
-
-navicella_img = pygame.Surface((50, 40))
-navicella_img.fill(ciano)
-pygame.draw.rect(navicella_img, WHITE, navicella_img.get_rect(), 2)
+size = ((60, 50))
 velocita_navicella = 5
 proiettile_img = pygame.Surface((5, 10))
 proiettile_img.fill(magenta)
 velocita_proiettile = 7
-nemico_img = pygame.Surface((30, 20))
-nemico_img.fill(rosso)
+sizen = ((40, 30))
 velocita_nemico = 3
-
-
 class Navicella:
+    def __init__(self, size):
+        self.image = pygame.image.load('immagini/navicella_nosfondo.png')
+        self.image = pygame.transform.scale(self.image, size)
+        self.rect = self.image.get_rect(center=(WIDTH // 2, HEIGHT - 100))
 
-    def __init__(self):
-        self.rect = navicella_img.get_rect(center=(WIDTH // 2, HEIGHT - 100))
-
-    def movimento(self, sdx, fdx):
-        self.rect.x += sdx * velocita_navicella
+    def movimento(self, dx, dy):
+        self.rect.x += dx * velocita_navicella
+        self.rect.y += dy * velocita_navicella
         self.rect.x = max(0, min(WIDTH - self.rect.width, self.rect.x))
-        self.rect.y += fdx * velocita_navicella
         self.rect.y = max(0, min(HEIGHT - self.rect.height, self.rect.y))
 
     def disegno(self, surface):
-        surface.blit(navicella_img, self.rect)
+        surface.blit(self.image, self.rect)
+
+
+class Nemico:
+    def __init__(self, size):
+        self.image = pygame.image.load('immagini/nemico_nosfondo.png')
+        self.image = pygame.transform.scale(self.image, size)
+        x = random.randint(0, WIDTH - self.image.get_width())
+        self.rect = self.image.get_rect(topleft=(x, -40))
+
+    def move(self):
+        self.rect.y += velocita_nemico
+
+    def disegno(self, surface):
+        surface.blit(self.image, self.rect)
 
 
 class Proiettile:
@@ -53,20 +62,7 @@ class Proiettile:
         surface.blit(proiettile_img, self.rect)
 
 
-class Nemico:
-
-    def __init__(self):
-        x = random.randint(0, WIDTH - nemico_img.get_width())
-        self.rect = nemico_img.get_rect(topleft=(x, -40))
-
-    def move(self):
-        self.rect.y += velocita_nemico
-
-    def disegno(self, surface):
-        surface.blit(nemico_img, self.rect)
-
-
-navicella = Navicella()
+navicella = Navicella(size)
 proiettili = []
 nemici = []
 score = 0
@@ -99,7 +95,7 @@ while running:
 
     spawn_timer += 4
     if spawn_timer > 60:  
-        nemici.append(Nemico())
+        nemici.append(Nemico(sizen))
         spawn_timer = 0
 
     for nemico in nemici[:]:
