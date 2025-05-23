@@ -27,6 +27,7 @@ bonus_active = False
 bonus_duration = 10000  
 bonus_timer = 0
 bonus_chance = 0.02   
+sparosnd = pygame.mixer.Sound('immagini/flanged zap.wav')
 
 class Sfondo:
     def __init__(self, size):
@@ -118,6 +119,7 @@ while running:
 
     if keys[pygame.K_SPACE] and current_time - last_shot_time > cooldown:
         proiettili.append(Proiettile(navicella.rect.centerx, navicella.rect.top, sizep))
+        sparosnd.play()
         last_shot_time = current_time
 
     for proiettile in proiettili[:]:
