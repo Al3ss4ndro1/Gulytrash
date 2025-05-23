@@ -13,7 +13,7 @@ font = pygame.font.SysFont("Arial", 30)
 clock = pygame.time.Clock()
 fps = 60
 WHITE = (255, 255, 255)
-size = ((60, 50))
+size = ((40, 50))
 velocita_navicella = 5
 proiettile_img = pygame.Surface((5, 10))
 proiettile_img.fill(magenta)
