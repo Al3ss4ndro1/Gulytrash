@@ -6,6 +6,7 @@ pygame.init()
 WIDTH, HEIGHT = 600, 800
 win = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Space Shooter")
+ssfondo =((WIDTH,HEIGHT))
 ciano = (0, 255, 255)
 rosso = (255, 0, 0)
 magenta = (230, 150, 255)
@@ -15,11 +16,22 @@ fps = 60
 WHITE = (255, 255, 255)
 size = ((40, 50))
 velocita_navicella = 5
-proiettile_img = pygame.Surface((5, 10))
-proiettile_img.fill(magenta)
+sizep= ((10, 15))
 velocita_proiettile = 7
 sizen = ((40, 30))
 velocita_nemico = 3
+shot_cooldown = 500  
+last_shot_time = 0
+
+
+class Sfondo:
+    def __init__(self,size):
+        self.image = pygame.image.load('immagini/sfondo.png')
+        self.image = pygame.transform.scale(self.image, size)
+        self.rect = self.image.get_rect()
+    def draw(self,surface):
+        surface.blit(self.image, self.rect)      
+        
 class Navicella:
     def __init__(self, size):
         self.image = pygame.image.load('immagini/navicella_nosfondo.png')
@@ -52,14 +64,16 @@ class Nemico:
 
 class Proiettile:
 
-    def __init__(self, x, y):
-        self.rect = proiettile_img.get_rect(center=(x, y))
+    def __init__(self, x, y, size):
+        self.image = pygame.image.load('immagini/th (1) (1).png')
+        self.image = pygame.transform.scale(self.image, size)
+        self.rect = self.image.get_rect(center=(x, y))
 
     def movimento(self):
         self.rect.y -= velocita_proiettile
 
     def disegno(self, surface):
-        surface.blit(proiettile_img, self.rect)
+        surface.blit(self.image, self.rect)
 
 
 navicella = Navicella(size)
@@ -67,11 +81,13 @@ proiettili = []
 nemici = []
 score = 0
 spawn_timer = 0
+namo = 0
 running = True
 while running:
     clock.tick(fps)
     win.fill((0, 0, 0))
-
+    sfondo = Sfondo(ssfondo)
+    sfondo.draw(win)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -84,16 +100,21 @@ while running:
         navicella.movimento(0,-1)
     if keys[pygame.K_DOWN]:
         navicella.movimento(0,1)
-    if keys[pygame.K_SPACE] and len(proiettili) < 5:
-        proiettili.append(
-            Proiettile(navicella.rect.centerx, navicella.rect.top))
+    current_time = pygame.time.get_ticks()
+    if keys[pygame.K_SPACE] and current_time - last_shot_time > shot_cooldown:
+        proiettili.append(Proiettile(navicella.rect.centerx, navicella.rect.top, sizep))
+        last_shot_time = current_time
+
 
     for proiettile in proiettili[:]:
         proiettile.movimento()
         if proiettile.rect.bottom < 0:
             proiettili.remove(proiettile)
-
-    spawn_timer += 4
+    namo += 1
+    if namo < 100:
+        spawn_timer += 4
+    else:
+        spawn_timer += 6
     if spawn_timer > 60:  
         nemici.append(Nemico(sizen))
         spawn_timer = 0
