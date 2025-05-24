@@ -34,12 +34,11 @@ exsnd.set_volume(0.1)
 
 class Sfondo:
     def __init__(self, size):
-        self.image = pygame.image.load('immagini/sfondo.png')
+        self.image = pygame.image.load('immagini/sfondonero (1).png')
         self.image = pygame.transform.scale(self.image, size)
         self.rect = self.image.get_rect()
     def draw(self, surface):
         surface.blit(self.image, self.rect)      
-
 
 class Navicella:
     def __init__(self, size):
@@ -65,7 +64,6 @@ class Nemico:
         self.rect.y += random.randint(1,4)
     def disegno(self, surface):
         surface.blit(self.image, self.rect)
-
 
 class Proiettile:
     def __init__(self, x, y, size):
@@ -103,14 +101,29 @@ class Esplosione:
         return pygame.time.get_ticks() - self.start_time > self.duration
 
 
+class Meteorite:
+    def __init__(self, size):
+        self.image = pygame.image.load('immagini/asteroide (1).png')
+        self.image = pygame.transform.scale(self.image, size)
+        x = random.randint(0, WIDTH - self.image.get_width())
+        self.rect = self.image.get_rect(topleft=(x, -40))
+    def move(self):
+        self.rect.y += 1
+    def disegno(self, surface):
+        surface.blit(self.image, self.rect)
+
+
 navicella = Navicella(size)
 proiettili = []
 nemici = []
 esplosioni = []
 bonus_drops = []
+meteoriti = []
 score = 0
 spawn_timer = 0
+spawn_timer2 = 0
 namo = 0
+vita_meteorite = 0
 running = True
 
 while running:
@@ -146,16 +159,26 @@ while running:
             proiettili.remove(proiettile)
 
     namo += 1
-    spawn_timer += 4 if namo < 100 else 6
+    spawn_timer += 2 if namo < 1000 else 4
+    spawn_timer2 += 1
     if spawn_timer > 60:
         nemici.append(Nemico(sizen))
         spawn_timer = 0
+    if spawn_timer2 > 150:
+        meteoriti.append(Meteorite(size))
+        spawn_timer2 = 0
 
     for nemico in nemici[:]:
         nemico.move()
         if nemico.rect.top > HEIGHT:
             nemici.remove(nemico)
         if nemico.rect.colliderect(navicella.rect):
+            running = False
+    for meteorite in meteoriti[:]:
+        meteorite.move()
+        if meteorite.rect.top > HEIGHT:
+            meteoriti.remove(meteorite)
+        if meteorite.rect.colliderect(navicella.rect):
             running = False
 
     for proiettile in proiettili[:]:
@@ -169,6 +192,18 @@ while running:
                 if random.random() < bonus_chance:
                     bonus_drops.append(Bonus(nemico.rect.centerx, nemico.rect.centery, sizepup))
                 break
+    for proiettile in proiettili[:]:
+        for meteorite in meteoriti[:]:
+            if proiettile.rect.colliderect(meteorite .rect):
+                proiettili.remove(proiettile)
+                vita_meteorite += 1
+                if vita_meteorite == 2:
+                    meteoriti.remove(meteorite)
+                    vita_meteorite = 0
+                    score += 5
+                    if random.random() < bonus_chance:
+                        bonus_drops.append(Bonus(nemico.rect.centerx, nemico.rect.centery, sizepup))
+                        break
 
     for bonus in bonus_drops[:]:
         bonus.movimento()
@@ -188,6 +223,8 @@ while running:
         proiettile.disegno(win)
     for nemico in nemici:
         nemico.disegno(win)
+    for meteorite in meteoriti:
+        meteorite.disegno(win)
     for bonus in bonus_drops:
         bonus.disegno(win)
     for esplosione in esplosioni[:]:
