@@ -1,13 +1,6 @@
 import pygame
 import random
 import sys
-from navicelle import Navicella
-from navicelle import Nemico
-from proiettile import Proiettile
-from proiettile import Bonus 
-from esplosione import Esplosione
-from esplosione import Esplosione2
-
 
 pygame.init()
 WIDTH, HEIGHT = 600, 800
@@ -46,6 +39,81 @@ class Sfondo:
         self.rect = self.image.get_rect()
     def draw(self, surface):
         surface.blit(self.image, self.rect)      
+
+class Navicella:
+    def __init__(self, size):
+        self.image = pygame.image.load('immagini/navicella2 (1).png')
+        self.image = pygame.transform.scale(self.image, size)
+        self.rect = self.image.get_rect(center=(WIDTH // 2, HEIGHT - 100))
+    def movimento(self, dx, dy):
+        self.rect.x += dx * velocita_navicella
+        self.rect.y += dy * velocita_navicella
+        self.rect.x = max(0, min(WIDTH - self.rect.width, self.rect.x))
+        self.rect.y = max(0, min(HEIGHT - self.rect.height, self.rect.y))
+    def disegno(self, surface):
+        surface.blit(self.image, self.rect)
+
+
+class Nemico:
+    def __init__(self, size):
+        self.image = pygame.image.load('immagini/nemico_nosfondo.png')
+        self.image = pygame.transform.scale(self.image, size)
+        x = random.randint(0, WIDTH - self.image.get_width())
+        self.rect = self.image.get_rect(topleft=(x, -40))
+    def move(self):
+        self.rect.y += random.randint(1,4)
+    def disegno(self, surface):
+        surface.blit(self.image, self.rect)
+
+class Proiettile:
+    def __init__(self, x, y, size):
+        self.image = pygame.image.load('immagini/laser (1).png')
+        self.image = pygame.transform.scale(self.image, size)
+        self.rect = self.image.get_rect(center=(x, y))
+    def movimento(self):
+        self.rect.y -= velocita_proiettile
+    def disegno(self, surface):
+        surface.blit(self.image, self.rect)
+
+
+class Bonus:
+    def __init__(self, x, y, size):
+        self.image = pygame.image.load('immagini/bonus.png')
+        self.image = pygame.transform.scale(self.image, size)  
+        self.rect = self.image.get_rect(center=(x, y))
+    def movimento(self):
+        self.rect.y += 2
+    def disegno(self, surface):
+        surface.blit(self.image, self.rect)
+
+class Esplosione:
+    def __init__(self, x, y, size):
+        self.image = pygame.image.load('immagini/esplosione (1).png')
+        self.image = pygame.transform.scale(self.image, size)
+        self.rect = self.image.get_rect(center=(x, y))
+        self.start_time = pygame.time.get_ticks()
+        self.duration = 300  
+
+    def disegno(self, surface):
+        surface.blit(self.image, self.rect)
+
+    def scaduta(self):
+        return pygame.time.get_ticks() - self.start_time > self.duration
+
+class Esplosione2:
+    def __init__(self, x, y, size):
+        self.image = pygame.image.load('immagini/esplosione2 (1).png')
+        self.image = pygame.transform.scale(self.image, size)
+        self.rect = self.image.get_rect(center=(x, y))
+        self.start_time = pygame.time.get_ticks()
+        self.duration = 300  
+
+    def disegno(self, surface):
+        surface.blit(self.image, self.rect)
+
+    def scaduta(self):
+        return pygame.time.get_ticks() - self.start_time > self.duration
+
 
 class Meteorite:
     def __init__(self, size):
