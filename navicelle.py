@@ -5,7 +5,7 @@ class Navicella:
     def __init__(self, size):
         self.image = pygame.image.load('immagini/navicella2 (1).png')
         self.image = pygame.transform.scale(self.image, size)
-        self.rect = self.image.get_rect(center=(WIDTH // 2, HEIGHT - 100))
+        self.rect = self.image.get_rect(center=(600 // 2, 800 - 100))
     def movimento(self, dx, dy):
         self.rect.x += dx * velocita_navicella
         self.rect.y += dy * velocita_navicella
